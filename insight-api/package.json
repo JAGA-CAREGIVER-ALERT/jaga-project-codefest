@@ -1,0 +1,7 @@
+{
+  "name": "jaga-insight-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jaga AI insight serverless function",
+  "engines": { "node": ">=18" }
+}

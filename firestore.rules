@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// Jaga Firestore rules.
+// Replaces "test mode" (which lets anyone read, write and delete everything).
+// Each collection only accepts the exact fields Jaga really writes. Nothing can be deleted.
+// Everything not listed here is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function onlyKeys(keys) {
+      return request.resource.data.keys().hasOnly(keys);
+    }
+
+    // One document per button press. Written by the ESP32. "handled" is set by the caregiver.
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if onlyKeys(['type', 'ts', 'device'])
+        && request.resource.data.type in ['toilet', 'eating', 'pain', 'general']
+        && request.resource.data.ts is timestamp
+        && request.resource.data.ts <= request.time + duration.value(1, 'h')
+        && request.resource.data.device is string
+        && request.resource.data.device.size() <= 40;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['handled'])
+        && request.resource.data.handled is bool;
+      allow delete: if false;
+    }
+
+    // Medicine tray: one document per weekday slot (LDR sensor).
+    match /meds/{day} {
+      allow read: if true;
+      allow create, update: if day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        && onlyKeys(['opened', 'ts'])
+        && request.resource.data.opened is bool
+        && request.resource.data.ts is timestamp;
+      allow delete: if false;
+    }
+
+    // "Mark dose as given". Document ID looks like 2026-10-19_am or 2026-10-19_pm.
+    match /doses/{doseId} {
+      allow read: if true;
+      allow create, update: if doseId.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}_(am|pm)$')
+        && onlyKeys(['given'])
+        && request.resource.data.given is timestamp;
+      allow delete: if false;
+    }
+
+    // Quick log notes from the caregiver. Create only.
+    match /logs/{logId} {
+      allow read: if true;
+      allow create: if onlyKeys(['text', 'ts'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.ts is timestamp;
+      allow update, delete: if false;
+    }
+
+    // AI summaries written by the insight function. Create only.
+    match /insights/{insightId} {
+      allow read: if true;
+      allow create: if onlyKeys(['createdAt', 'text_en', 'text_ms', 'stats'])
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.text_en is string && request.resource.data.text_en.size() <= 5000
+        && request.resource.data.text_ms is string && request.resource.data.text_ms.size() <= 5000
+        && request.resource.data.stats is map;
+      allow update, delete: if false;
+    }
+  }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jaga test data</title>
+<style>
+  body{font-family:-apple-system,"Segoe UI",Arial,sans-serif;max-width:520px;margin:0 auto;padding:16px;background:#f6f6f2;color:#1f1e1b}
+  h1{font-size:20px;margin:0 0 4px} p.sub{color:#6b6b63;font-size:13px;margin:0 0 16px}
+  .card{background:#fff;border:1px solid #e3e3dd;border-radius:12px;padding:14px;margin-bottom:14px}
+  h2{font-size:15px;margin:0 0 10px}
+  label{display:block;font-size:12px;color:#6b6b63;margin:8px 0 4px}
+  select,input,button{font-size:15px;padding:10px;border-radius:8px;border:1px solid #cfcfc8;width:100%;box-sizing:border-box}
+  button{background:#2f6f6b;color:#fff;border:0;margin-top:10px;cursor:pointer}
+  button.alt{background:#fff;color:#2f6f6b;border:1px solid #2f6f6b}
+  button.danger{background:#fff;color:#b4453c;border:1px solid #b4453c}
+  .row{display:flex;gap:8px} .row>*{flex:1}
+  #msg{position:sticky;bottom:8px;background:#1f1e1b;color:#fff;border-radius:8px;padding:10px;font-size:13px;min-height:20px}
+  .warn{background:#faeeda;color:#6b4a1e;border-radius:8px;padding:10px;font-size:13px}
+</style>
+</head>
+<body>
+<h1>Jaga test data</h1>
+<p class="sub">Team tool. Adds fake data to Firestore until the prototype is ready.</p>
+<div id="warn" class="warn" style="display:none">Firebase is not set up yet. Paste your config into firebase-config.js first.</div>
+
+<div class="card">
+  <h2>1. Add one event</h2>
+  <label>Type</label>
+  <select id="type">
+    <option value="toilet">Toilet</option><option value="eating">Eating</option>
+    <option value="pain">Pain</option><option value="general">General</option>
+  </select>
+  <label>Time (your local time)</label>
+  <input id="when" type="datetime-local">
+  <button id="addOne">Add event</button>
+</div>
+
+<div class="card">
+  <h2>2. Fill a sample week</h2>
+  <p class="sub">Adds about 40 events over the last 7 days. Today gets extra toilet and pain presses, so the AI has something to notice.</p>
+  <button id="seed">Generate sample week</button>
+</div>
+
+<div class="card">
+  <h2>3. Medicine tray</h2>
+  <div class="row">
+    <button class="alt" data-slot="mon">Mon</button><button class="alt" data-slot="tue">Tue</button>
+    <button class="alt" data-slot="wed">Wed</button><button class="alt" data-slot="thu">Thu</button>
+  </div>
+  <button id="resetMeds" class="danger">Mark all slots as not opened</button>
+</div>
+
+<div class="card">
+  <h2>4. AI summary</h2>
+  <button id="ai">Run AI summary now</button>
+</div>
+
+<div class="card">
+  <h2>5. Clean up</h2>
+  <button id="clear" class="danger">Delete ALL events</button>
+</div>
+
+<div id="msg">Ready.</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, addDoc, setDoc, doc, getDocs, writeBatch, Timestamp }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const CFG = window.JAGA_CONFIG || {};
+const $ = (id) => document.getElementById(id);
+const say = (t) => { $("msg").textContent = t; };
+
+const ready = CFG.firebase && !String(CFG.firebase.apiKey).startsWith("PASTE");
+if (!ready) { $("warn").style.display = "block"; }
+const db = ready ? getFirestore(initializeApp(CFG.firebase)) : null;
+
+// default time = now (local), formatted for datetime-local
+const pad = (n) => String(n).padStart(2, "0");
+const toLocalInput = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+$("when").value = toLocalInput(new Date());
+
+function need() { if (!db) { say("Set up firebase-config.js first."); return false; } return true; }
+
+$("addOne").onclick = async () => {
+  if (!need()) return;
+  try {
+    await addDoc(collection(db, "events"), {
+      type: $("type").value,
+      ts: Timestamp.fromDate(new Date($("when").value)),
+      device: "manual",
+    });
+    say(`Added ${$("type").value} at ${$("when").value}`);
+  } catch (e) { say("Error: " + e.message); }
+};
+
+$("seed").onclick = async () => {
+  if (!need()) return;
+  try {
+    // events per day: [toilet, eating, pain, general], oldest day first, last row = today
+    const plan = [[4,3,1,1],[5,3,0,1],[4,3,1,0],[5,3,1,1],[4,3,0,1],[5,3,1,1],[8,3,4,2]];
+    const batch = writeBatch(db);
+    const now = new Date();
+    let n = 0;
+    plan.forEach((counts, i) => {
+      const daysAgo = plan.length - 1 - i;
+      counts.forEach((c, t) => {
+        for (let k = 0; k < c; k++) {
+          const d = new Date(now);
+          d.setDate(d.getDate() - daysAgo);
+          // spread through the day, but never in the future for today
+          const maxHour = daysAgo === 0 ? Math.max(now.getHours(), 1) : 22;
+          d.setHours(6 + Math.floor(Math.random() * (maxHour - 5 > 1 ? maxHour - 5 : 1)), Math.floor(Math.random() * 60), 0, 0);
+          if (d > now) d.setTime(now.getTime() - Math.floor(Math.random() * 3600000));
+          batch.set(doc(collection(db, "events")), {
+            type: ["toilet","eating","pain","general"][t], ts: Timestamp.fromDate(d), device: "manual",
+          });
+          n++;
+        }
+      });
+    });
+    await batch.commit();
+    say(`Added ${n} sample events.`);
+  } catch (e) { say("Error: " + e.message); }
+};
+
+document.querySelectorAll("[data-slot]").forEach((b) => {
+  b.onclick = async () => {
+    if (!need()) return;
+    try {
+      await setDoc(doc(db, "meds", b.dataset.slot), { opened: true, ts: Timestamp.now() });
+      say(`Slot ${b.dataset.slot} marked as opened.`);
+    } catch (e) { say("Error: " + e.message); }
+  };
+});
+
+$("resetMeds").onclick = async () => {
+  if (!need()) return;
+  try {
+    for (const s of ["mon","tue","wed","thu"]) await setDoc(doc(db, "meds", s), { opened: false, ts: Timestamp.now() });
+    say("All slots reset.");
+  } catch (e) { say("Error: " + e.message); }
+};
+
+$("ai").onclick = async () => {
+  if (!CFG.insightUrl) { say("insightUrl is empty in firebase-config.js. Deploy the function first."); return; }
+  say("Asking the AI...");
+  try {
+    const r = await fetch(CFG.insightUrl, { method: "POST" });
+    const j = await r.json();
+    say(r.ok ? `Done (${j.source}). ${j.text_en}` : "Error: " + (j.error || r.status));
+  } catch (e) { say("Error: " + e.message); }
+};
+
+$("clear").onclick = async () => {
+  if (!need()) return;
+  if (!confirm("Delete every document in events?")) return;
+  try {
+    const snap = await getDocs(collection(db, "events"));
+    let batch = writeBatch(db), n = 0, total = 0;
+    for (const d of snap.docs) {
+      batch.delete(d.ref); n++; total++;
+      if (n === 400) { await batch.commit(); batch = writeBatch(db); n = 0; }
+    }
+    if (n) await batch.commit();
+    say(`Deleted ${total} events.`);
+  } catch (e) { say("Error: " + e.message); }
+};
+</script>
+</body>
+</html>

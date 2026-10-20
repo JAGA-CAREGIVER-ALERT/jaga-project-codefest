@@ -1,0 +1,483 @@
+{
+  "version": 1,
+  "author": "Jaga",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrMon",
+      "top": 394.4,
+      "left": -181.8,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrTue",
+      "top": 394.4,
+      "left": -97.8,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrWed",
+      "top": 394.4,
+      "left": -13.8,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrThu",
+      "top": 394.4,
+      "left": 70.2,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrFri",
+      "top": 394.4,
+      "left": 154.2,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrSat",
+      "top": 394.4,
+      "left": 238.2,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldrSun",
+      "top": 394.4,
+      "left": 322.2,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnToilet",
+      "top": 150,
+      "left": -330,
+      "attrs": {
+        "color": "blue",
+        "label": "Toilet"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnEating",
+      "top": 210,
+      "left": -330,
+      "attrs": {
+        "color": "yellow",
+        "label": "Eating"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnPain",
+      "top": 270,
+      "left": -330,
+      "attrs": {
+        "color": "red",
+        "label": "Pain"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnGeneral",
+      "top": 330,
+      "left": -330,
+      "attrs": {
+        "color": "green",
+        "label": "General"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledGreen",
+      "top": -42,
+      "left": -285,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rGreen",
+      "top": -5.7,
+      "left": -230,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledRed",
+      "top": 20,
+      "left": -285,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rRed",
+      "top": 56.3,
+      "left": -230,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX0",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX0",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "btnToilet:1.r",
+      "esp:D25",
+      "blue",
+      [
+        "h173",
+        "v-71.7"
+      ]
+    ],
+    [
+      "btnEating:1.r",
+      "esp:D26",
+      "yellow",
+      [
+        "h187",
+        "v-122"
+      ]
+    ],
+    [
+      "btnPain:1.r",
+      "esp:D27",
+      "red",
+      [
+        "h201",
+        "v-172.2"
+      ]
+    ],
+    [
+      "btnGeneral:1.r",
+      "esp:D14",
+      "green",
+      [
+        "h215",
+        "v-223"
+      ]
+    ],
+    [
+      "btnToilet:2.l",
+      "btnEating:2.l",
+      "black",
+      [
+        "h-14",
+        "v60"
+      ]
+    ],
+    [
+      "btnEating:2.l",
+      "btnPain:2.l",
+      "black",
+      [
+        "h-14",
+        "v60"
+      ]
+    ],
+    [
+      "btnPain:2.l",
+      "btnGeneral:2.l",
+      "black",
+      [
+        "h-14",
+        "v60"
+      ]
+    ],
+    [
+      "btnGeneral:2.l",
+      "esp:GND.2",
+      "black",
+      [
+        "h-14",
+        "v34",
+        "h310",
+        "v-247"
+      ]
+    ],
+    [
+      "ledGreen:A",
+      "rGreen:1",
+      "green",
+      []
+    ],
+    [
+      "rGreen:2",
+      "esp:D32",
+      "green",
+      [
+        "h51.2",
+        "v72.2"
+      ]
+    ],
+    [
+      "ledRed:A",
+      "rRed:1",
+      "red",
+      []
+    ],
+    [
+      "rRed:2",
+      "esp:D33",
+      "red",
+      [
+        "h31.2",
+        "v19.8"
+      ]
+    ],
+    [
+      "ledGreen:C",
+      "ledRed:C",
+      "black",
+      [
+        "v10",
+        "h-30",
+        "v52"
+      ]
+    ],
+    [
+      "ledRed:C",
+      "btnToilet:2.l",
+      "black",
+      [
+        "v10",
+        "h-74",
+        "v110"
+      ]
+    ],
+    [
+      "ldrMon:VCC",
+      "ldrTue:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrMon:GND",
+      "ldrTue:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrTue:VCC",
+      "ldrWed:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrTue:GND",
+      "ldrWed:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrWed:VCC",
+      "ldrThu:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrWed:GND",
+      "ldrThu:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrThu:VCC",
+      "ldrFri:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrThu:GND",
+      "ldrFri:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrFri:VCC",
+      "ldrSat:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrFri:GND",
+      "ldrSat:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrSat:VCC",
+      "ldrSun:VCC",
+      "red",
+      [
+        "v-12",
+        "h84"
+      ]
+    ],
+    [
+      "ldrSat:GND",
+      "ldrSun:GND",
+      "black",
+      [
+        "v-24",
+        "h84"
+      ]
+    ],
+    [
+      "ldrMon:DO",
+      "esp:D23",
+      "orange",
+      [
+        "v-64",
+        "h326.9",
+        "v-252"
+      ]
+    ],
+    [
+      "ldrTue:DO",
+      "esp:D22",
+      "orange",
+      [
+        "v-55",
+        "h228.9",
+        "v-251"
+      ]
+    ],
+    [
+      "ldrWed:DO",
+      "esp:D21",
+      "orange",
+      [
+        "v-91",
+        "h130.9",
+        "v-186.1"
+      ]
+    ],
+    [
+      "ldrThu:DO",
+      "esp:D19",
+      "orange",
+      [
+        "v-46",
+        "h32.9",
+        "v-221.8"
+      ]
+    ],
+    [
+      "ldrFri:DO",
+      "esp:D18",
+      "orange",
+      [
+        "v-100",
+        "h-65.1",
+        "v-158.3"
+      ]
+    ],
+    [
+      "ldrSat:DO",
+      "esp:D5",
+      "orange",
+      [
+        "v-82",
+        "h-163.1",
+        "v-166.7"
+      ]
+    ],
+    [
+      "ldrSun:DO",
+      "esp:D4",
+      "orange",
+      [
+        "v-73",
+        "h-261.1",
+        "v-147"
+      ]
+    ],
+    [
+      "ldrMon:VCC",
+      "esp:3V3",
+      "red",
+      [
+        "v-118",
+        "h234.7",
+        "v-63.5"
+      ]
+    ],
+    [
+      "ldrMon:GND",
+      "esp:GND.1",
+      "black",
+      [
+        "v-109",
+        "h238.7",
+        "v-82"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}
