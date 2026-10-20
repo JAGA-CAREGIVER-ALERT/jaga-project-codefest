@@ -15,6 +15,8 @@ Built for UTP CodeFest'26, theme *Innovating For The People, By The People*.
 
 **Repository:** https://github.com/JAGA-CAREGIVER-ALERT/jaga-project-codefest
 
+**Live demo:** https://jaga-caregiver-alert.github.io/jaga-project-codefest/dashboard/
+
 ---
 
 ## 1. The problem (Impact)
@@ -70,6 +72,7 @@ The full architecture and tech stack diagrams are in our slide submission.
 - The firmware is written for a physical ESP32 DevKit. Our own board could not be flashed (it reports a locked secure-boot setting), so a physical build is the next step, not something we are claiming.
 - Sample data on the dashboard (before Firebase is connected, and the demo week of history) is **synthetic**.
 - The AI summary uses a **built-in rule-based writer** by default. If a Claude API key is set, it uses the Claude model instead. Both follow the same safety rules (patterns only, no diagnosis).
+- The live demo's "Refresh AI summary" button needs the AI function running on a computer, so it only works locally. Everything else works online.
 
 ---
 
