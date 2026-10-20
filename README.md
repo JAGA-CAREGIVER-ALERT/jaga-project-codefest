@@ -1,3 +1,4 @@
+![Jaga banner](banner.png)
 # Jaga
 
 **A caregiver dashboard and smart button box for families looking after a bedridden parent.**
