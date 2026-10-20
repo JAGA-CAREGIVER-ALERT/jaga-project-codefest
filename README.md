@@ -11,8 +11,9 @@ Built for UTP CodeFest'26, theme *Innovating For The People, By The People*.
 - Ainin Nabihah binti Osman
 - Humaira Kaisah binti Ahmad Sherhan
 
-**Video:** to be added
-**Repository:** to be added
+**Video:** https://drive.google.com/file/d/1wPXEytA6Zl69A-pzi9ZafKHjitqEdPR6/view?usp=sharing 
+
+**Repository:** https://github.com/JAGA-CAREGIVER-ALERT/jaga-project-codefest
 
 ---
 
