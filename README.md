@@ -17,6 +17,8 @@ Built for UTP CodeFest'26, theme *Innovating For The People, By The People*.
 
 **Live demo:** https://jaga-caregiver-alert.github.io/jaga-project-codefest/dashboard/
 
+**Hardware simulation (Wokwi):** https://wokwi.com/projects/478143271603239937
+
 ---
 
 ## 1. The problem (Impact)
@@ -174,6 +176,10 @@ Software cost for a pilot is RM 0: Firebase and Vercel have free tiers, and the 
 4. Open the Analysis page and tap **Refresh AI summary**.
 
 ### D. Hardware (Wokwi)
+
+**Quick way (recommended):** open the Wokwi link at the top of this page, press **Play**, then click a button in the simulation. The live dashboard updates within seconds.
+
+**Build your own copy:**
 1. Create a new ESP32 project at [wokwi.com](https://wokwi.com).
 2. Paste `firmware/jaga_esp32/jaga_esp32.ino` and `firmware/jaga_esp32/diagram.json`.
 3. Edit the top of the sketch (Wi-Fi is already set to `Wokwi-GUEST` for the simulator). Keep `DEVICE` as `jaga-01`.
