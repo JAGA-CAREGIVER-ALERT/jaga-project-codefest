@@ -14,9 +14,9 @@ Built for UTP CodeFest'26, theme *Innovating For The People, By The People*.
 
 **Video:** https://drive.google.com/file/d/1wPXEytA6Zl69A-pzi9ZafKHjitqEdPR6/view?usp=sharing 
 
-**Repository:** https://github.com/JAGA-CAREGIVER-ALERT/jaga-project-codefest
+**Repository:** https://github.com/JAGA-CAREGIVER-ALERT/DAMN-Healthtech-and-Community-Wellness
 
-**Live demo:** https://jaga-caregiver-alert.github.io/jaga-project-codefest/dashboard/
+**Live demo:** https://jaga-caregiver-alert.github.io/DAMN-Healthtech-and-Community-Wellness/dashboard/
 
 **Hardware simulation (Wokwi):** https://wokwi.com/projects/478143271603239937
 
